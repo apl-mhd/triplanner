@@ -1,0 +1,29 @@
+
+{% extends "base.html" %} 
+{% load static %}
+
+
+{% block content %}
+
+<div id="app" class="container-fluid">[[name]] ad</div>
+
+{% endblock content %} 
+
+
+{% block script %}
+
+<script src="{% static 'base/sp.picker.js' %}"></script>
+
+<script>
+  const { createApp } = Vue;
+  createApp({
+    data() {
+      return {
+        name: "apel",
+      };
+    },
+
+    delimiters: ["[[", "]]"],
+  }).mount("#app");
+</script>
+{% endblock script %}
