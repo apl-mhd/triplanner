@@ -1,11 +1,16 @@
 {% extends "base.html" %} {% load static %} {% block content %}
 
 <div id="app" class="container">
-  <custom-input
-    :address.sync="address"
-    :firstname.sync="firstname"
-  ></custom-input>
-  [[address]] - [[firstname]]
+  <div v-for="(item, key) in customs" :key="key">
+    <custom-input
+      :address.sync="item.address"
+      :first-name.sync="item.firstName"
+    ></custom-input>
+    <button @click="removeComponent(key)">-</button>
+  </div>
+  <button @click="addCustom">+</button>
+
+  [[customs]]
   <hr />
   <div class="row justify-content-md-center">
     <div class="col-md-auto">
@@ -70,8 +75,13 @@
       return {
         name: a,
         address: "",
-        firstname: "",
         components: [],
+        customs: [
+          {
+            address: "",
+            firstName: "",
+          },
+        ],
         data: {
           city: 1,
           start_data: "",
@@ -94,6 +104,13 @@
       },
       handleCity(data) {
         console.log(data);
+      },
+
+      addCustom() {
+        this.customs.push({});
+      },
+      removeComponent(index) {
+        this.customs.splice(index, 1);
       },
     },
 

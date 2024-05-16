@@ -1,6 +1,6 @@
 Vue.component('custom-input',{
     
-    props:['address', 'firstname'],
+    props:['address', 'firstName'],
 
     data(){
         return{
@@ -9,13 +9,7 @@ Vue.component('custom-input',{
     },
 
     methods:{
-       updateAddress(data){
-        this.$emit('update:address', data)
-       },
 
-       updateFirstName(data){
-        this.$emit('update:firstname', data)
-       }
     },
 
     template: `
@@ -25,7 +19,7 @@ Vue.component('custom-input',{
                 <input 
                 type="text" 
                     :value="address"
-                    @input="updateAddress($event.target.value)"
+                    @input="$emit('update:address', $event.target.value)"
                     class="form-control"
                 >
             </div>
@@ -34,8 +28,8 @@ Vue.component('custom-input',{
                 <label class="form-label"></label>
                 <input 
                 type="text" 
-                    :value="firstname"
-                    @input="updateFirstName($event.target.value)"
+                    :value="firstName"
+                    @input="$emit('update:firstName', $event.target.value)"
                     class="form-control"
                 >
             </div>
