@@ -1,29 +1,103 @@
+{% extends "base.html" %} {% load static %} {% block content %}
 
-{% extends "base.html" %} 
-{% load static %}
+<div id="app" class="container">
+  <custom-input
+    :address.sync="address"
+    :firstname.sync="firstname"
+  ></custom-input>
+  [[address]] - [[firstname]]
+  <hr />
+  <div class="row justify-content-md-center">
+    <div class="col-md-auto">
+      {% comment %} start form {% endcomment %}
+      <form @submit.prevent>
+        <div class="mt-3">
+          <span>Where do you want to go</span>
+          <input-field title="" @city-change="handleCity"></input-field>
+        </div>
+        <div v-for="(item, index) in components" :key="inex">
+          <span>Next destination</span>
+          <button @click="delComponent(index)">del</button>
+          <input-field title=""></input-field>
+        </div>
+        <div class="mb-3">
+          <button @click="addComponent" class="btn btn-success">
+            Add Destination
+          </button>
+        </div>
 
+        <div class="mb-3">
+          <label for="" class="form-label"
+            >Select the kind of activities you want to do</label
+          >
+          <div class="flex flex-wrap">
+            <button class="btn btn-secondary">Click</button>
+          </div>
+        </div>
 
-{% block content %}
+        <div class="mb-3">
+          <label for="" class="form-label">How Many People Are Going</label>
+          <input type="number" class="form-control" min="1" />
+        </div>
 
-<div id="app" class="container-fluid">[[name]] ad</div>
+        <div class="mb-3">
+          <label for="" class="form-label">Who Travel With you?</label>
+          <div class="d-flex justify-content-between">
+            <button class="btn btn-lg btn-secondary">Friends</button>
+            <button class="btn btn-lg btn-secondary">Family</button>
+          </div>
+        </div>
 
-{% endblock content %} 
+        {% comment %} Start activity {% endcomment %}
+      </form>
+    </div>
+  </div>
+</div>
 
+{% endblock content %} {% block script %}
 
-{% block script %}
-
-<script src="{% static 'base/sp.picker.js' %}"></script>
+<script src="{% static 'base/main.js' %}"></script>
+<script src="{% static 'base/blog.js' %}"></script>
+<script src="{% static 'base/components/inputfield.js' %}"></script>
+<script src="{% static 'base/components/custominput.js' %}"></script>
 
 <script>
+  const a = "apel";
   const { createApp } = Vue;
-  createApp({
+  new Vue({
+    el: "#app",
     data() {
       return {
-        name: "apel",
+        name: a,
+        address: "",
+        firstname: "",
+        components: [],
+        data: {
+          city: 1,
+          start_data: "",
+          end_data: "",
+          activities: [1, 2, 3],
+          total_person: 0,
+          travelar_type: "Family",
+        },
+        datas: [],
       };
     },
 
+    methods: {
+      addComponent() {
+        this.components.push("input-field");
+      },
+
+      delComponent(index) {
+        this.components.splice(index, 1);
+      },
+      handleCity(data) {
+        console.log(data);
+      },
+    },
+
     delimiters: ["[[", "]]"],
-  }).mount("#app");
+  });
 </script>
 {% endblock script %}
