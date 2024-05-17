@@ -4,7 +4,9 @@ Vue.component('custom-input',{
 
     data(){
         return{
-            city_name: ''
+            cities: [
+                {id: 1, country:"Bangladesh", city: "Dhaka"}
+            ]
         }
     },
 
@@ -17,11 +19,12 @@ Vue.component('custom-input',{
             <div class="mb-3">
                 <label class="form-label"></label>
                 <input 
-                type="text" 
-                    :value="address"
-                    @input="$emit('update:address', $event.target.value)"
-                    class="form-control"
+                    type="text" 
+                        :value="address"
+                        @input="$emit('update:address', $event.target.value)"
+                        class="form-control"
                 >
+                
             </div>
            
             <div class="mb-3">
