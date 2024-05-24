@@ -4,6 +4,7 @@ from . models import Country, City, Activity, Itinerary, Route
 from django.db.models import Q
 from django.http import JsonResponse
 from django.core import serializers
+from django.shortcuts import get_list_or_404
 import json
 from pathlib import Path
 
@@ -49,12 +50,25 @@ def addTourPlan(request):
 
     data = json.loads(request.body)
 
+    print(data)
+
     itinerary = Itinerary.objects.create(
-        title=data.get('title')
-        , created_by=request.user)
+        title=data.get('title'), created_by=request.user)
 
     if itinerary:
-        return JsonResponse({'id': itinerary.id, 'title': itinerary.title, 'created_by': itinerary.created_by.id}, status=201)
+        for item in data.get('itineraryDetails'):
+            city = City.objects.get(id=item['city'])
+
+            route = Route(itinerary=itinerary, city=city,
+                          start_date=item['startDate'], end_date=item['endDate'])
+
+            route.save()
+            activities_ids = data.get('activities')
+            if activities_ids:
+                activities = Activity.objects.filter(id__in=activities_ids)
+                route.activity.add(*activities)
+
+            return JsonResponse({'id': itinerary.id, 'title': itinerary.title, 'created_by': itinerary.created_by.id}, status=201)
 
     return JsonResponse({'error': 'Invalid data'}, status=400)
 

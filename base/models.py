@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 
+
 class Country(models.Model):
     name = models.CharField(max_length=255)
 
@@ -55,7 +56,7 @@ class Route(models.Model):
     city = models.ForeignKey(City, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
-    activity = models.ManyToManyField(Activity)
+    activity = models.ManyToManyField(Activity, blank=True, null=True)
 
     # self __str__(self):
     #     return self.activity

@@ -18,7 +18,7 @@
           <div class="d-flex flex-column">
             <div v-if="key">
               <span>Going Next</span>
-              <button @click="delComponent(key)">del</button>
+              <button type="button" @click="delComponent(key)">del</button>
             </div>
             <div v-else>
               <span>Where do you want to go? </span>
@@ -35,7 +35,7 @@
           </div>
         </div>
         <div class="mb-3">
-          <button @click="addComponent" class="btn btn-success">
+          <button type="button" @click="addComponent" class="btn btn-success">
             Add Destination
           </button>
         </div>
@@ -46,6 +46,7 @@
           >
           <div class="d-flex flex-row">
             <button
+              type="button"
               @click="addActivity(activity.id)"
               :class="[activitySelected(activity.id) ? 'btn-success': '', 'btn', , 'mx-3']"
               v-for="activity in activities"
@@ -69,8 +70,12 @@
         <div class="mb-3">
           <label for="" class="form-label">Who Travel With you?</label>
           <div class="d-flex justify-content-between">
-            <button class="btn btn-lg btn-secondary">Friends</button>
-            <button class="btn btn-lg btn-secondary">Family</button>
+            <button type="button" class="btn btn-lg btn-secondary">
+              Friends
+            </button>
+            <button type="button" class="btn btn-lg btn-secondary">
+              Family
+            </button>
           </div>
         </div>
 
