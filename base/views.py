@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from . models import Country, City
-
-
+from . models import Country, City, Activity, Itinerary, Route
+from django.db.models import Q
+from django.http import JsonResponse
+from django.core import serializers
+import json
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -10,22 +12,56 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 def index(request):
-    countries = Country.objects.prefetch_related('cities')
+    activities = Activity.objects.all()
 
-    x = [{'name': country.name, 'cities': [city.name for city in country.cities.all()]}
-         for country in countries]
+    data = []
+    for i in activities:
+        data.append({'id': i.id, 'name': i.get_activity_display()})
 
-    print(x, 'apel')
-    # [city for city in country.cities.all()]
+    data = json.dumps(list(data))
+    context = {
+        'activities': data
+    }
 
-    # data = []
-    # for country in countries:
-    #     temp = {'country': {'id': country.id,
-    #                         'name': country.name}, 'cities': []}
-    #     for city in country.cities.all():
-    #         temp['cities'].append({'id': city.id, 'name': city.name})
+   # return render(request, 'base/index.html', context={'data': dumps({'name': 'name'})})
+    return render(request, 'base/index.html', context=context)
 
-    #     data.append(temp)
-    # print(data)
 
-    return render(request, 'base/index.html')
+def getCountryDetails(request):
+    q = request.GET.get('q')
+
+    if q:
+        countries = Country.objects.filter(Q(name__icontains=q) | Q(
+            cities__name__icontains=q)).distinct().prefetch_related('cities')
+    else:
+        countries = Country.objects.prefetch_related('cities')
+
+    data = [{'id': city.id, 'country_name': country.name, 'name': city.name}
+            for country in countries
+            for city in country.cities.all()]
+
+  #  data = [ for city in country.cities.all()] for country in countries
+
+    return JsonResponse(data, safe=False)
+
+
+def addTourPlan(request):
+
+    data = json.loads(request.body)
+
+    itinerary = Itinerary.objects.create(
+        title=data.get('title')
+        , created_by=request.user)
+
+    if itinerary:
+        return JsonResponse({'id': itinerary.id, 'title': itinerary.title, 'created_by': itinerary.created_by.id}, status=201)
+
+    return JsonResponse({'error': 'Invalid data'}, status=400)
+
+    print('apel', request.user.id)
+    print((data['itineraryDetails']))
+    # for i in :
+    # for i in data.itineraryDetails:
+    #     print(i)
+
+    return HttpResponse('asu')

@@ -3,9 +3,18 @@
 <div id="app" class="container">
   <div class="row">
     <div class="col">
-      {% comment %} start form {% endcomment %}
-      <form @submit.prevent class="mt-3">
-        <div v-for="(item, key) in itineraries" :key="key">
+      {% comment %} start form {% endcomment %} [[itinerary]] -
+      <form @submit.prevent="submitForm" class="mt-3">
+        <div class="mb-3">
+          <label for="" class="form-label">Title</label>
+          <input
+            type="text"
+            v-model="itinerary.title"
+            class="form-control"
+            placeholder="Title"
+          />
+        </div>
+        <div v-for="(item, key) in itinerary.itineraryDetails" :key="key">
           <div class="d-flex flex-column">
             <div v-if="key">
               <span>Going Next</span>
@@ -18,8 +27,8 @@
               <input-field
                 title=""
                 :city.sync="item.city"
-                :start-date.sync="item.start_date"
-                :end-date.sync="item.end_date"
+                :start-date.sync="item.startDate"
+                :end-date.sync="item.endDate"
               >
               </input-field>
             </div>
@@ -35,14 +44,26 @@
           <label for="" class="form-label"
             >Select the kind of activities you want to do</label
           >
-          <div class="flex flex-wrap">
-            <button class="btn btn-secondary">Click</button>
+          <div class="d-flex flex-row">
+            <button
+              @click="addActivity(activity.id)"
+              :class="[activitySelected(activity.id) ? 'btn-success': '', 'btn', , 'mx-3']"
+              v-for="activity in activities"
+              :key="activity.id"
+            >
+              <span>[[activity.name]]</span>
+            </button>
           </div>
         </div>
 
         <div class="mb-3">
           <label for="" class="form-label">How Many People Are Going</label>
-          <input type="number" class="form-control" min="1" />
+          <input
+            type="number"
+            v-model="itinerary.totalPerson"
+            class="form-control"
+            min="1"
+          />
         </div>
 
         <div class="mb-3">
@@ -53,6 +74,9 @@
           </div>
         </div>
 
+        <div class="mb-3">
+          <button type="submit" class="btn btn-success">Submit Form</button>
+        </div>
         {% comment %} Start activity {% endcomment %}
       </form>
     </div>
@@ -66,30 +90,67 @@
 <script src="{% static 'base/components/inputfield.js' %}"></script>
 <script src="{% static 'base/components/custominput.js' %}"></script>
 
+<script></script>
+
 <script>
-  const a = "apel";
+  const a = JSON.parse("{{activities|escapejs}}");
+
+  for (const i in a) {
+    console.log(a[i]);
+  }
+
   const { createApp } = Vue;
   new Vue({
     el: "#app",
     data() {
       return {
-        itineraries: [
-          {
-            city: "",
-            start_date: "",
-            end_date: "",
-          },
-        ],
+        itinerary: {
+          title: "",
+          itineraryDetails: [
+            {
+              city: "",
+              startDate: "",
+              endDate: "",
+            },
+          ],
+          activities: [],
+          totalPerson: 1,
+        },
+        activities: a,
       };
     },
 
     methods: {
+      submitForm() {
+        axios.defaults.xsrfCookieName = "csrftoken";
+        axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+        axios
+          .post("http://127.0.0.1:8000/add-tour-plan/", this.itinerary)
+          .then((response) => {})
+          .catch((error) => console.log(error));
+      },
       addComponent() {
-        this.itineraries.push({});
+        this.itinerary.itineraryDetails.push({
+          cit: null,
+          startDate: null,
+          endDate: null,
+        });
       },
 
       delComponent(index) {
-        this.itineraries.splice(index, 1);
+        this.itinerary.itineraryDetails.splice(index, 1);
+      },
+
+      addActivity(id) {
+        if (this.itinerary.activities.includes(id))
+          this.itinerary.activities = this.itinerary.activities.filter(
+            (i) => i != id
+          );
+        else this.itinerary.activities.push(id);
+      },
+
+      activitySelected(id) {
+        return this.itinerary.activities.includes(id);
       },
     },
 

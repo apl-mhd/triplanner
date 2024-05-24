@@ -2,7 +2,6 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 
-
 class Country(models.Model):
     name = models.CharField(max_length=255)
 
@@ -12,7 +11,8 @@ class Country(models.Model):
 
 class City(models.Model):
     name = models.CharField(max_length=255)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name='cities')
+    country = models.ForeignKey(
+        Country, on_delete=models.CASCADE, related_name='cities')
 
     def __str__(self) -> str:
         return self.name
@@ -31,7 +31,7 @@ class Activity(models.Model):
     activity = models.TextField(max_length=255, choices=ActivityChoices)
 
     def __str__(self):
-        return self.activity
+        return self.get_activity_display()
 
 
 class Itinerary(models.Model):
