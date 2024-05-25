@@ -1,6 +1,6 @@
 Vue.component('input-field',{
     
-    props:['city', 'startDate', 'endDate', 'title'],
+    props:['city', 'startDate', 'endDate', 'title', 'reset'],
 
       data(){
         return{
@@ -47,6 +47,13 @@ Vue.component('input-field',{
             this.isOptionSelect = false
             this.isSearch = false
         }
+    },
+
+    watch:{
+    reset(newval){
+        this.cityName = ''
+    }
+        
     },
 
     template: `

@@ -31,6 +31,7 @@ rel="stylesheet" href="{% static "base/style.css" %}"> {% endblock css %}
                 :city.sync="item.city"
                 :start-date.sync="item.startDate"
                 :end-date.sync="item.endDate"
+                :reset="reset"
               >
               </input-field>
             </div>
@@ -85,7 +86,11 @@ rel="stylesheet" href="{% static "base/style.css" %}"> {% endblock css %}
 
         <div class="mb-3">
           <button type="submit" class="btn btn-success">Submit Form</button>
+          <button @click="resetForm" type="button" class="btn btn-success">
+            Reset
+          </button>
         </div>
+        <div class="mb-3"></div>
         {% comment %} Start activity {% endcomment %}
       </form>
     </div>
@@ -102,11 +107,7 @@ rel="stylesheet" href="{% static "base/style.css" %}"> {% endblock css %}
 <script></script>
 
 <script>
-  const a = JSON.parse("{{activities|escapejs}}");
-
-  for (const i in a) {
-    console.log(a[i]);
-  }
+  const activitiesList = JSON.parse("{{activities|escapejs}}");
 
   const { createApp } = Vue;
   new Vue({
@@ -125,7 +126,20 @@ rel="stylesheet" href="{% static "base/style.css" %}"> {% endblock css %}
           activities: [],
           totalPerson: 1,
         },
-        activities: a,
+        blankForm: {
+          title: "",
+          itineraryDetails: [
+            {
+              city: "",
+              startDate: "",
+              endDate: "",
+            },
+          ],
+          activities: [],
+          totalPerson: 1,
+        },
+        activities: activitiesList,
+        reset: true,
       };
     },
 
@@ -135,12 +149,20 @@ rel="stylesheet" href="{% static "base/style.css" %}"> {% endblock css %}
         axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
         axios
           .post("http://127.0.0.1:8000/add-tour-plan/", this.itinerary)
-          .then((response) => {})
+          .then((response) => {
+            this.resetForm();
+            console.log(response);
+          })
           .catch((error) => console.log(error));
+      },
+      resetForm() {
+        console.log("reset");
+        this.itinerary = JSON.parse(JSON.stringify(this.blankForm));
+        this.reset = !this.reset;
       },
       addComponent() {
         this.itinerary.itineraryDetails.push({
-          cit: null,
+          city: null,
           startDate: null,
           endDate: null,
         });
