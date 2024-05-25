@@ -6,7 +6,8 @@ Vue.component('input-field',{
         return{
             cityName: '',
             options: [],
-            isSelect: false
+            isSearch: false,
+            isOptionSelect: false
         }
     },
     methods:{
@@ -22,16 +23,29 @@ Vue.component('input-field',{
                 console.error(error)
             })
                 this.$emit('update:city', null)
-                this.isSelect = false
+                //this.isSearch = true
             },
 
         selectCity(data){
             this.cityName = data.name
             this.$emit('update:city', data.id)
-            this.isSelect = true
+            this.isSearch =false
         },
         searchCity(){
+            this.isSearch = true
             this.citySearch(this.cityName)
+        },
+        inputFocusOut(){
+            if(this.isOptionSelect){
+                this.isSearch =false
+            }
+        },
+        optionMouseDown(){
+            this.isOptionSelect = true
+        },
+        optionMouseUp(){
+            this.isOptionSelect = false
+            this.isSearch = false
         }
     },
 
@@ -39,16 +53,18 @@ Vue.component('input-field',{
         <div>
             <div class="mb-3">
                 <label class="form-label"> {{title}}</label>
-                <input @focus="searchCity" type="text" v-model="cityName" @input="citySearch(cityName)" class="form-control">
-                <div class="auto-suggest-box w-25" v-if="!isSelect">
+                <input @focusout="inputFocusOut" @focus="searchCity" type="text" v-model="cityName" @input="citySearch(cityName)" class="form-control">
+                <div>
+                <div class="auto-suggest-box w-25" v-if="isSearch">
                     <ul>
-                        <li v-for="option in options" :key="option.id">
+                        <li class="mb-1"  v-for="option in options" :key="option.id">
                         <div  @click="selectCity(option)">
-                            <p>{{option.name}}</p>
-                            <span>{{option.country_name}}</span>
+                            <span>{{option.name}}</span> <br/>
+                            <i>{{option.country_name}}</i>
                         </div>
                         </li>
                     </ul>
+                </div>
                 </div>
             </div>
             <div class="d-flex justify-content-start mb-3">
