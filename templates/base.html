@@ -9,6 +9,7 @@
 
     <link rel="stylesheet" href="{% static 'style.css' %}" />
     <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}" />
+    {% block css %}{% endblock css %}
     <script src="{% static 'axios.min.js' %}"></script>
     <script src="{% static 'vue.js' %}"></script>
   </head>

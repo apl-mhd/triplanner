@@ -40,7 +40,7 @@ Vue.component('input-field',{
             <div class="mb-3">
                 <label class="form-label"> {{title}}</label>
                 <input @focus="searchCity" type="text" v-model="cityName" @input="citySearch(cityName)" class="form-control">
-                <div v-if="!isSelect">
+                <div class="auto-suggest-box w-25" v-if="!isSelect">
                     <ul>
                         <li v-for="option in options" :key="option.id">
                         <div  @click="selectCity(option)">
@@ -63,4 +63,3 @@ Vue.component('input-field',{
         </div>  
     `
 })
-//khan fair mart 1250

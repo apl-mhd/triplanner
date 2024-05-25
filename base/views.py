@@ -72,10 +72,3 @@ def addTourPlan(request):
 
     return JsonResponse({'error': 'Invalid data'}, status=400)
 
-    print('apel', request.user.id)
-    print((data['itineraryDetails']))
-    # for i in :
-    # for i in data.itineraryDetails:
-    #     print(i)
-
-    return HttpResponse('asu')

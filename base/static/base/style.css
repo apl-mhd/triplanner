@@ -1,3 +1,7 @@
-body{
-    background: yellow;
+ul{
+    list-style: none;
+}
+
+.auto-suggest-box{
+    border:  1px solid;
 }
